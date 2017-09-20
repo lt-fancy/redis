@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.sawallianc.redis.AbstractBaseRedisOperations;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by fingertap on 2017/6/8.
  */
@@ -66,6 +68,11 @@ public class RedisValueOperations extends AbstractBaseRedisOperations<String,Obj
             return connection.incr(serializeKey(key));
         },false,false);
     }
+
+    public <T> List<T> getArray(String key,Class<T> clazz){
+        return JSON.parseArray(this.get(key),clazz);
+    }
+
     public long increase(String key){
         return increase(DEFAULT_DB_INDEX,key);
     }
