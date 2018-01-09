@@ -19,7 +19,7 @@ public abstract class AbstractBaseRedisOperations<K,V> {
     protected static final int DEFAULT_DB_INDEX = 0;
     protected ThreadLocal<Integer> dbIndex = new ThreadLocal<Integer>();
     @Autowired
-    protected RedisTemplate<K,V> redisTemplate;
+    public RedisTemplate<K,V> redisTemplate;
 
     /**
      * 删除指定key的存储信息
@@ -51,13 +51,21 @@ public abstract class AbstractBaseRedisOperations<K,V> {
 
     public List<String> keys(String pattern){
         return this.redisTemplate.execute((connection) -> {
-            connection.select(dbIndex.get().intValue());
+            connection.select(DEFAULT_DB_INDEX);
             Set<byte[]> set = connection.keys(pattern.getBytes());
             List<String> keysList = Lists.newArrayList();
             for(byte[] bs : set){
                 keysList.add(new String(bs));
             }
             return keysList;
+        },false,false);
+    }
+
+    public boolean flushAll(){
+        return this.redisTemplate.execute((connection) -> {
+            connection.select(DEFAULT_DB_INDEX);
+            connection.flushAll();
+            return true;
         },false,false);
     }
 
@@ -69,7 +77,7 @@ public abstract class AbstractBaseRedisOperations<K,V> {
     }
 
     public Long ttl(String key){
-        return ttl(key);
+        return ttl(DEFAULT_DB_INDEX,key);
     }
 
     protected byte[] serializeKey(String key){

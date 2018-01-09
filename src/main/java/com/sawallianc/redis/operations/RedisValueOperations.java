@@ -14,19 +14,19 @@ public class RedisValueOperations extends AbstractBaseRedisOperations<String,Obj
     public RedisValueOperations(){
 
     }
-    public void setIfAbsent(int dbIndex,String key,Object value,long seconds){
-        redisTemplate.execute((connection) -> {
+    public boolean setIfAbsent(int dbIndex,String key,Object value,long seconds){
+        return redisTemplate.execute((connection) -> {
             connection.select(dbIndex);
             connection.setNX(serializeKey(key),serializeValue(value));
             connection.expire(serializeKey(key),seconds <= 0L?DEFAULT_EXPIRE_TIME:seconds);
             return true;
         },false,false);
     }
-    public void setIfAbsent(String key,Object value,long seconds){
-        setIfAbsent(DEFAULT_DB_INDEX,key,value,seconds);
+    public boolean setIfAbsent(String key,Object value,long seconds){
+        return setIfAbsent(DEFAULT_DB_INDEX,key,value,seconds);
     }
-    public void setIfAbsent(String key,Object value){
-        setIfAbsent(DEFAULT_DB_INDEX,key,value,DEFAULT_EXPIRE_TIME);
+    public boolean setIfAbsent(String key,Object value){
+        return setIfAbsent(DEFAULT_DB_INDEX,key,value,DEFAULT_EXPIRE_TIME);
     }
     public void set(int dbIndex,String key,Object value,long seconds){
         redisTemplate.execute((connection) ->{
