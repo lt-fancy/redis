@@ -51,7 +51,7 @@ public abstract class AbstractBaseRedisOperations<K,V> {
 
     public List<String> keys(String pattern){
         return this.redisTemplate.execute((connection) -> {
-            connection.select(dbIndex.get().intValue());
+            connection.select(DEFAULT_DB_INDEX);
             Set<byte[]> set = connection.keys(pattern.getBytes());
             List<String> keysList = Lists.newArrayList();
             for(byte[] bs : set){

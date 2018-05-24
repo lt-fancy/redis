@@ -100,6 +100,13 @@ public class RedisValueOperations extends AbstractBaseRedisOperations<String,Obj
             return connection.decrBy(serializeKey(key),delta);
         },false,false);
     }
+    public void flushAll(){
+        redisTemplate.execute((connection) -> {
+            connection.select(DEFAULT_DB_INDEX);
+            connection.flushAll();
+            return 1;
+        },false,false);
+    }
     public long decreaseBy(String key,long delta){
         return decreaseBy(DEFAULT_DB_INDEX,key,delta);
     }
