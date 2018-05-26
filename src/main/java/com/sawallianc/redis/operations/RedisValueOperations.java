@@ -28,6 +28,15 @@ public class RedisValueOperations extends AbstractBaseRedisOperations<String,Obj
     public boolean setIfAbsent(String key,Object value){
         return setIfAbsent(DEFAULT_DB_INDEX,key,value,DEFAULT_EXPIRE_TIME);
     }
+
+    public void setWithoutExpire(String key,Object value){
+        redisTemplate.execute((connection) ->{
+            connection.select(DEFAULT_DB_INDEX);
+            connection.set(serializeKey(key),serializeValue(value));
+            return Boolean.valueOf(true);
+        },false,false);
+    }
+
     public void set(int dbIndex,String key,Object value,long seconds){
         redisTemplate.execute((connection) ->{
             connection.select(dbIndex);
@@ -100,11 +109,11 @@ public class RedisValueOperations extends AbstractBaseRedisOperations<String,Obj
             return connection.decrBy(serializeKey(key),delta);
         },false,false);
     }
-    public void flushAll(){
-        redisTemplate.execute((connection) -> {
+    public boolean flushAll(){
+        return redisTemplate.execute((connection) -> {
             connection.select(DEFAULT_DB_INDEX);
             connection.flushAll();
-            return 1;
+            return true;
         },false,false);
     }
     public long decreaseBy(String key,long delta){

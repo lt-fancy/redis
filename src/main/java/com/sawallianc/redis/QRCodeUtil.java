@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class QRCodeUtil {
     public static void main(String[] args) throws Exception{
-        parse();
+//        parse();
         generate();
     }
 
@@ -42,7 +42,7 @@ public class QRCodeUtil {
         int height=300;
         int width=300;//图片大小
         String format="png";//图片格式
-        String content="https://www.xingbianli.com/openrack/eb60d7bc-37eb-4caf-ae13-11d2ed2ab343/buy";//内容
+        String content="http://192.168.0.104:8088/rack/ad42fe31-4755-b688-efd2-5cdbc81cf3d0?code=123";//内容
 
         //定义二维码的参数:
         HashMap hints=new HashMap();
@@ -52,7 +52,7 @@ public class QRCodeUtil {
 
         BitMatrix bitMatrix=new MultiFormatWriter().encode(content,BarcodeFormat.QR_CODE,width,height);//开始生成二维码
 
-        Path file=new File("C:/img.png").toPath();//指定保存路径
+        Path file=new File("E:/img.png").toPath();//指定保存路径
         MatrixToImageWriter.writeToPath(bitMatrix,format,file);
     }
 
